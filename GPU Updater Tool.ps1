@@ -239,7 +239,15 @@ $ReadHost = Read-Host "(Y/N)"
        Write-Output  "Success!"
        Write-Output `n "Installing Driver, this may take up to 10 minutes and will automatically reboot if required"
        InstallDriver
-       Write-Output "Success - Driver Installed - Checking if reboot is required"
+       Write-Output `n "Success - Driver Installed - Writing to hosts file"
+       Add-Content C:\Windows\System32\drivers\etc\hosts "`n127.0.0.1 gfwsl.geforce.com`n127.0.0.1 services.gfe.nvidia.com"
+       Write-Output `n "Success - Hosts Modified - Downloading GeForce Experience and installing"
+       (New-Object System.Net.WebClient).DownloadFile($("https://de.download.nvidia.com/GFE/GFEClient/3.20.2.34/GeForce_Experience_v3.20.2.34.exe"), "C:\ParsecTemp\Apps\gfe.exe")
+       Start-Process -FilePath "C:\ParsecTemp\Apps\gfe.exe" -ArgumentList "-s -noreboot" -Wait
+       Write-Output "Success - GeForce Experience Installed - Checking if reboot is required"
+       (New-Object System.Net.WebClient).DownloadFile($("https://lg.io/assets/NvFBCEnable.zip"), "C:\ParsecTemp\Apps\NvFBCEnable.zip")
+      #  New-Item -Path Parsec-Cloud-Preparation-Tool -ItemType Directory  
+      #  Expand-Archive $ENV:UserProfile\Downloads\Parsec-Cloud-Preparation-Tool.Zip -DestinationPath $ENV:UserProfile\Downloads\Parsec-Cloud-Preparation-Tool  
        rebootlogic
        } 
        N {Write-output "Exiting Scipt"
@@ -341,3 +349,4 @@ querygpu
 checkDriverInstalled
 ConfirmCharges
 checkUpdates
+
